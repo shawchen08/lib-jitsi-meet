@@ -1065,17 +1065,18 @@ JitsiConference.prototype.isModerator = function() {
 
 /**
  * Set password for the room.
- * @param {string} password new password for the room.
+ * @param {string}  password new password for the room.
+ * @param {boolean} isInit   创建者默认就是 moderator，可以设置密码
  * @returns {Promise}
  */
-JitsiConference.prototype.lock = function(password) {
-    if (!this.isModerator()) {
+JitsiConference.prototype.lock = function(password = '', isInit = false) {
+    if (!this.isModerator() && !isInit) {
         return Promise.reject();
     }
 
     return new Promise((resolve, reject) => {
         this.room.lockRoom(
-            password || '',
+            password,
             () => resolve(),
             err => reject(err),
             () => reject(JitsiConferenceErrors.PASSWORD_NOT_SUPPORTED));
